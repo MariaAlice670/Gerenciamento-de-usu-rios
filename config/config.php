@@ -5,7 +5,7 @@
     $dbPassword = 'bdjmf';
     $dbName = 'new_agenda';
     
-    $conexao = new mysqli($dbHost,$dbUsername,$dbPassword,$dbName);
+    $conexao = new PDO($dbHost,$dbUsername,$dbPassword,$dbName);
 
      if($conexao->connect_errno)
     // {
