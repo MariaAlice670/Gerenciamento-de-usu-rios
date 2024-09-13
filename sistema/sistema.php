@@ -1,25 +1,41 @@
 <?php
-    session_start();
-    include_once('config.php');
-    // print_r($_SESSION);
-    if((!isset($_SESSION['email']) == true) and (!isset($_SESSION['senha']) == true))
-    {
+session_start();
+include_once('../config/config.php');
+
+try {
+    // Verificar se o usuário está autenticado
+    if (!isset($_SESSION['email']) || !isset($_SESSION['senha'])) {
         unset($_SESSION['email']);
         unset($_SESSION['senha']);
-        header('Location: login.php');
+        header('Location: ../login/login.php');
+        exit();
     }
-    $logado = $_SESSION['email'];
-    if(!empty($_GET['search']))
-    {
+    
+    // Preparar a consulta SQL
+    if (!empty($_GET['search'])) {
         $data = $_GET['search'];
-        $sql = "SELECT * FROM usuarios WHERE id LIKE '%$data%' or nome LIKE '%$data%' or email LIKE '%$data%' ORDER BY id DESC";
-    }
-    else
-    {
+        // Escapar e preparar o dado de entrada
+        $data = htmlspecialchars($data);
+        $sql = "SELECT * FROM usuarios WHERE id LIKE :data OR nome LIKE :data OR email LIKE :data ORDER BY id DESC";
+        $stmt = $conexao->prepare($sql);
+        $stmt->bindValue(':data', "%$data%");
+        $stmt->execute();
+    } else {
         $sql = "SELECT * FROM usuarios ORDER BY id DESC";
+        $stmt = $conexao->prepare($sql);
+        $stmt->execute();
     }
-    $result = $conexao->query($sql);
+    
+    // Buscar os resultados
+    $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+} catch (PDOException $e) {
+    // Tratar erros de conexão e execução
+    echo 'Erro: ' . htmlspecialchars($e->getMessage());
+}
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,7 +43,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <title>SISTEMA | GN</title>
+    <title>SISTEMA | GDU</title>
     <style>
         body{
             background: linear-gradient(to right, rgb(20, 147, 220), rgb(17, 54, 71));
@@ -49,7 +65,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">SISTEMA DO GN</a>
+            <a class="navbar-brand" href="#">SISTEMA DE GD</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -90,7 +106,7 @@
             </thead>
             <tbody>
                 <?php
-                    while($user_data = mysqli_fetch_assoc($result)) {
+                    while($user_data = pdo_fetch_assoc($result)) {
                         echo "<tr>";
                         echo "<td>".$user_data['id']."</td>";
                         echo "<td>".$user_data['nome']."</td>";

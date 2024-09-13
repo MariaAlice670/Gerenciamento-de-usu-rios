@@ -1,35 +1,46 @@
 <?php
-    include_once('config.php');
+include_once('../config/config.php');
 
-    if(!empty($_GET['id']))
-    {
-        $id = $_GET['id'];
-        $sqlSelect = "SELECT * FROM usuarios WHERE id=$id";
-        $result = $conexao->query($sqlSelect);
-        if($result->num_rows > 0)
-        {
-            while($user_data = mysqli_fetch_assoc($result))
-            {
-                $nome = $user_data['nome'];
-                $senha = $user_data['senha'];
-                $email = $user_data['email'];
-                $telefone = $user_data['telefone'];
-                $sexo = $user_data['sexo'];
-                $data_nasc = $user_data['data_nasc'];
-                $cidade = $user_data['cidade'];
-                $estado = $user_data['estado'];
-                $endereco = $user_data['endereco'];
-            }
-        }
-        else
-        {
+// Verifica se o parâmetro 'id' está presente na URL
+if (!empty($_GET['id']) && is_numeric($_GET['id'])) {
+    $id = (int)$_GET['id']; // Cast para garantir que o ID seja um número inteiro
+
+    try {
+        // Conectar ao banco de dados usando PDO
+        $conexao = new PDO('mysql:host=localhost;dbname=your_database;charset=utf8', 'your_username', 'your_password');
+        $conexao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        // Preparar a consulta SQL
+        $stmtSelect = $conexao->prepare('SELECT * FROM usuarios WHERE id = :id');
+        $stmtSelect->execute(['id' => $id]);
+
+        // Verificar se o usuário foi encontrado
+        if ($stmtSelect->rowCount() > 0) {
+            // Recuperar os dados do usuário
+            $user_data = $stmtSelect->fetch(PDO::FETCH_ASSOC);
+            $nome = $user_data['nome'];
+            $senha = $user_data['senha'];
+            $email = $user_data['email'];
+            $telefone = $user_data['telefone'];
+            $sexo = $user_data['sexo'];
+            $data_nasc = $user_data['data_nasc'];
+            $cidade = $user_data['cidade'];
+            $estado = $user_data['estado'];
+            $endereco = $user_data['endereco'];
+        } else {
+            // Redirecionar se o usuário não for encontrado
             header('Location: sistema.php');
+            exit();
         }
+    } catch (PDOException $e) {
+        // Tratar erros de conexão e execução
+        echo 'Erro: ' . $e->getMessage();
     }
-    else
-    {
-        header('Location: sistema.php');
-    }
+} else {
+    // Redirecionar se o parâmetro 'id' não estiver presente ou não for numérico
+    header('Location: sistema.php');
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">

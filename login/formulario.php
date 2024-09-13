@@ -1,49 +1,60 @@
 <?php
 
-    if(isset($_POST['submit']))
-    {
-        // print_r('Nome: ' . $_POST['nome']);
-        // print_r('<br>');
-        // print_r('Email: ' . $_POST['email']);
-        // print_r('<br>');
-        // print_r('Telefone: ' . $_POST['telefone']);
-        // print_r('<br>');
-        // print_r('Sexo: ' . $_POST['genero']);
-        // print_r('<br>');
-        // print_r('Data de nascimento: ' . $_POST['data_nascimento']);
-        // print_r('<br>');
-        // print_r('Cidade: ' . $_POST['cidade']);
-        // print_r('<br>');
-        // print_r('Estado: ' . $_POST['estado']);
-        // print_r('<br>');
-        // print_r('Endereço: ' . $_POST['endereco']);
+if (isset($_POST['submit'])) {
+    // Inclui o arquivo de configuração onde a conexão PDO é estabelecida
+    include_once('../config/config.php');
 
-        include_once('config.php');
+    // Coleta os dados do formulário
+    $nome = $_POST['nome'];
+    $email = $_POST['email'];
+    $senha = $_POST['senha'];
+    $telefone = $_POST['telefone'];
+    $sexo = $_POST['genero'];
+    $data_nasc = $_POST['data_nascimento'];
+    $cidade = $_POST['cidade'];
+    $estado = $_POST['estado'];
+    $endereco = $_POST['endereco'];
 
-        $nome = $_POST['nome'];
-        $email = $_POST['email'];
-        $senha = $_POST['senha'];
-        $telefone = $_POST['telefone'];
-        $sexo = $_POST['genero'];
-        $data_nasc = $_POST['data_nascimento'];
-        $cidade = $_POST['cidade'];
-        $estado = $_POST['estado'];
-        $endereco = $_POST['endereco'];
+    try {
+        // Hash da senha para armazenar de forma segura
+        $senhaHash = password_hash($senha, PASSWORD_BCRYPT);
 
-        $result = mysqli_query($conexao, "INSERT INTO usuarios(nome,senha,email,telefone,sexo,data_nasc,cidade,estado,endereco) 
-        VALUES ('$nome','$senha','$email','$telefone','$sexo','$data_nasc','$cidade','$estado','$endereco')");
-
+        // Prepara a instrução SQL com parâmetros nomeados
+        $sql = "INSERT INTO usuarios (nome, senha, email, telefone, sexo, data_nasc, cidade, estado, endereco) 
+                VALUES (:nome, :senha, :email, :telefone, :sexo, :data_nasc, :cidade, :estado, :endereco)";
+        
+        $stmt = $conexao->prepare($sql);
+        
+        // Associa os parâmetros aos valores
+        $stmt->bindParam(':nome', $nome);
+        $stmt->bindParam(':senha', $senhaHash); // Armazena o hash da senha
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':telefone', $telefone);
+        $stmt->bindParam(':sexo', $sexo);
+        $stmt->bindParam(':data_nasc', $data_nasc);
+        $stmt->bindParam(':cidade', $cidade);
+        $stmt->bindParam(':estado', $estado);
+        $stmt->bindParam(':endereco', $endereco);
+        
+        // Executa a instrução
+        $stmt->execute();
+        
+        // Redireciona para a página de login após a inserção
         header('Location: login.php');
+        exit();
+    } catch (PDOException $e) {
+        // Caso ocorra um erro, exibe a mensagem
+        echo "Erro: " . $e->getMessage();
     }
-
+}
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="PT-BR">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulário  | GN</title>
+    <title>Cadrastro  | GDU</title>
     <style>
         body{
             font-family: Arial, Helvetica, sans-serif;
@@ -116,14 +127,39 @@
         #submit:hover{
             background-image: linear-gradient(to right,rgb(0, 80, 172), rgb(80, 19, 195));
         }
+        .back-button {
+       display: inline-block;
+       padding: 10px 20px;
+       margin-top: 10px;
+       font-size: 16px;
+       text-align: center;
+       text-decoration: none;
+       color: #fff;
+       background-color: Crimson; /* Cor de fundo do botão */
+       border: 2px solid Crimson; /* Cor da borda do botão */
+       border-radius: 5px; /* Cantos arredondados */
+       transition: background-color 0.3s, color 0.3s, border-color 0.3s; /* Transição suave */
+       cursor: pointer;
+}
+
+.back-button:hover {
+    background-color: #0056b3; /* Cor de fundo ao passar o mouse */
+    border-color: #0056b3; /* Cor da borda ao passar o mouse */
+    color: #fff; /* Cor do texto ao passar o mouse */
+}
+
+.back-button:active {
+    background-color: #004494; /* Cor de fundo ao clicar */
+    border-color: #004494; /* Cor da borda ao clicar */
+}
     </style>
 </head>
 <body>
-    <a href="home.php">Voltar</a>
+    <a href="home.php" class="back-button">Voltar</a>
     <div class="box">
         <form action="formulario.php" method="POST">
             <fieldset>
-                <legend><b>Fórmulário de Clientes</b></legend>
+                <legend><b>Cadrastro de Usuários</b></legend>
                 <br>
                 <div class="inputBox">
                     <input type="text" name="nome" id="nome" class="inputUser" required>

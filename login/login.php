@@ -40,10 +40,37 @@
             background-color: deepskyblue;
             cursor: pointer;
         }
+        /* Estilo para o botão de voltar */
+        .back-button {
+       display: inline-block;
+    padding: 10px 20px;
+    margin-top: 10px;
+    font-size: 16px;
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+    background-color: Crimson; /* Cor de fundo do botão */
+    border: 2px solid Crimson; /* Cor da borda do botão */
+    border-radius: 5px; /* Cantos arredondados */
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s; /* Transição suave */
+    cursor: pointer;
+}
+
+.back-button:hover {
+    background-color: #0056b3; /* Cor de fundo ao passar o mouse */
+    border-color: #0056b3; /* Cor da borda ao passar o mouse */
+    color: #fff; /* Cor do texto ao passar o mouse */
+}
+
+.back-button:active {
+    background-color: #004494; /* Cor de fundo ao clicar */
+    border-color: #004494; /* Cor da borda ao clicar */
+}
+
     </style>
 </head>
 <body>
-    <a href="home.php">Voltar</a>
+    <a href="home.php" class="back-button">Voltar</a>
     <div>
         <h1>Login</h1>
         <form action="testLogin.php" method="POST">
