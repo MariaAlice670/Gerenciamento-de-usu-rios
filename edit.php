@@ -1,46 +1,35 @@
 <?php
-include_once('../config/config.php');
+    include_once('config.php');
 
-// Verifica se o parâmetro 'id' está presente na URL
-if (!empty($_GET['id']) && is_numeric($_GET['id'])) {
-    $id = (int)$_GET['id']; // Cast para garantir que o ID seja um número inteiro
-
-    try {
-        // Conectar ao banco de dados usando PDO
-        $conexao = new PDO('mysql:host=localhost;dbname=your_database;charset=utf8', 'your_username', 'your_password');
-        $conexao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-        // Preparar a consulta SQL
-        $stmtSelect = $conexao->prepare('SELECT * FROM usuarios WHERE id = :id');
-        $stmtSelect->execute(['id' => $id]);
-
-        // Verificar se o usuário foi encontrado
-        if ($stmtSelect->rowCount() > 0) {
-            // Recuperar os dados do usuário
-            $user_data = $stmtSelect->fetch(PDO::FETCH_ASSOC);
-            $nome = $user_data['nome'];
-            $senha = $user_data['senha'];
-            $email = $user_data['email'];
-            $telefone = $user_data['telefone'];
-            $sexo = $user_data['sexo'];
-            $data_nasc = $user_data['data_nasc'];
-            $cidade = $user_data['cidade'];
-            $estado = $user_data['estado'];
-            $endereco = $user_data['endereco'];
-        } else {
-            // Redirecionar se o usuário não for encontrado
-            header('Location: sistema.php');
-            exit();
+    if(!empty($_GET['id']))
+    {
+        $id = $_GET['id'];
+        $sqlSelect = "SELECT * FROM usuarios WHERE id=$id";
+        $result = $conexao->query($sqlSelect);
+        if($result->num_rows > 0)
+        {
+            while($user_data = mysqli_fetch_assoc($result))
+            {
+                $nome = $user_data['nome'];
+                $senha = $user_data['senha'];
+                $email = $user_data['email'];
+                $telefone = $user_data['telefone'];
+                $sexo = $user_data['sexo'];
+                $data_nasc = $user_data['data_nasc'];
+                $cidade = $user_data['cidade'];
+                $estado = $user_data['estado'];
+                $endereco = $user_data['endereco'];
+            }
         }
-    } catch (PDOException $e) {
-        // Tratar erros de conexão e execução
-        echo 'Erro: ' . $e->getMessage();
+        else
+        {
+            header('Location: sistema.php');
+        }
     }
-} else {
-    // Redirecionar se o parâmetro 'id' não estiver presente ou não for numérico
-    header('Location: sistema.php');
-    exit();
-}
+    else
+    {
+        header('Location: sistema.php');
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -48,7 +37,7 @@ if (!empty($_GET['id']) && is_numeric($_GET['id'])) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulário | GN</title>
+    <title>Cadratro | GDU</title>
     <style>
         body{
             font-family: Arial, Helvetica, sans-serif;
@@ -121,6 +110,7 @@ if (!empty($_GET['id']) && is_numeric($_GET['id'])) {
         #submit:hover{
             background-image: linear-gradient(to right,rgb(0, 80, 172), rgb(80, 19, 195));
         }
+        
     </style>
 </head>
 <body>
@@ -128,7 +118,7 @@ if (!empty($_GET['id']) && is_numeric($_GET['id'])) {
     <div class="box">
         <form action="saveEdit.php" method="POST">
             <fieldset>
-                <legend><b>Editar Cliente</b></legend>
+                <legend><b>Editar Usuários</b></legend>
                 <br>
                 <div class="inputBox">
                     <input type="text" name="nome" id="nome" class="inputUser" value=<?php echo $nome;?> required>

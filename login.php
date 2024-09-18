@@ -39,34 +39,33 @@
         .inputSubmit:hover{
             background-color: deepskyblue;
             cursor: pointer;
-        }
-        /* Estilo para o botão de voltar */
-        .back-button {
-       display: inline-block;
+        }.back-button {
+    background-color: Crimson; /* Azul */
+    border: none;
+    color: white;
     padding: 10px 20px;
-    margin-top: 10px;
-    font-size: 16px;
     text-align: center;
     text-decoration: none;
-    color: #fff;
-    background-color: Crimson; /* Cor de fundo do botão */
-    border: 2px solid Crimson; /* Cor da borda do botão */
-    border-radius: 5px; /* Cantos arredondados */
-    transition: background-color 0.3s, color 0.3s, border-color 0.3s; /* Transição suave */
+    display: inline-block;
+    font-size: 16px;
+    margin: 10px 2px;
     cursor: pointer;
+    border-radius: 5px; /* Cantos arredondados */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Efeitos de transição */
 }
 
+/* Efeito ao passar o mouse sobre o botão */
 .back-button:hover {
-    background-color: #0056b3; /* Cor de fundo ao passar o mouse */
-    border-color: #0056b3; /* Cor da borda ao passar o mouse */
-    color: #fff; /* Cor do texto ao passar o mouse */
+    background-color: #0056b3; /* Azul mais escuro */
+    transform: scale(1.05); /* Leve aumento do botão */
 }
 
+/* Efeito ao clicar no botão */
 .back-button:active {
-    background-color: #004494; /* Cor de fundo ao clicar */
-    border-color: #004494; /* Cor da borda ao clicar */
+    background-color: #004080; /* Azul ainda mais escuro */
+    transform: scale(0.95); /* Leve redução do botão */
 }
-
+        
     </style>
 </head>
 <body>
